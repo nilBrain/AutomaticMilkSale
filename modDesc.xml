@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="47">
+
+	<author>nilBrain</author>
+    <version>1.0.0.0</version>
+    
+	<title>
+        <en>Automatic MilkSale</en>
+        <de>Automatischer Milchverkauf</de>
+    </title>
+    
+	<description>
+        <en>
+			<![CDATA[This mod automatically sells the Milk from the Husbandrys at 0 o'clock.]]>
+		</en>
+		<de>
+			<![CDATA[Dieser Mod verkauft automatisch die Milch von den Ställen um 0Uhr.]]>
+		</de>
+    </description>
+    
+	<iconFilename>icon.dds</iconFilename>
+    <multiplayer supported="true"/>
+	
+	<extraSourceFiles>	
+		<sourceFile filename="AutomaticMilkSale.lua" /> 
+	</extraSourceFiles>
+</modDesc>
