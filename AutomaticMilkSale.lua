@@ -4,7 +4,7 @@
 -- @author  nilBrain
 -- @date  11/12/18
 -- @node This Script do sold atomaticly Milk from Husbandry.
---
+-- @update Call "EconomyManager" from the Instance not from the Class, add debug func, call Animals over Method...
 
 AutomaticMilkSale = {
 	info = {
@@ -14,44 +14,57 @@ AutomaticMilkSale = {
         notes = " Animal Script",
         version = ".1.0.0.0",
         date = " 11.12.2018",
-        update = " --.--.--",
+        update = " 05.05.20",
         info = " This Script do sold atomaticly Milk from Husbandry",
 	}
 };
 
+function AutomaticMilkSale:logInfo(s, ...)
+	if self.debug then
+		print(string.format(s, ...));
+	end;
+end;
+
+
 function AutomaticMilkSale:loadMap(mapFilename)
-	g_currentMission.environment:addDayChangeListener(self);
-	addConsoleCommand("nbMilkSaleDebug", "", "consoleComandMilkSaleDebug", self);
+	if g_currentMission:getIsServer() then
+		g_currentMission.environment:addDayChangeListener(self);
+		addConsoleCommand("nbMilkSaleDebug", "", "consoleComandMilkSaleDebug", self);
+	end;
 	self.milkLevel = 0;
 	self.debug = false;
 end;
 
 function AutomaticMilkSale:deleteMap()
-	g_currentMission.environment:removeDayChangeListener(self);
-	removeConsoleCommand("nbMilkSaleDebug");
+	if g_currentMission:getIsServer() then
+		g_currentMission.environment:removeDayChangeListener(self);
+		removeConsoleCommand("nbMilkSaleDebug");
+	end;
 end;
 
 
-function AutomaticMilkSale:sellMilk()
-	g_currentMission:addMoney(self:canMilkSale() * EconomyManager:getPricePerLiter(16), g_currentMission.player.farmId, MoneyType.SOLD_MILK);
-	self:canMilkSale(true);
+function AutomaticMilkSale:sellMilk(farmID)
+	g_currentMission:addMoney(self:canMilkSale(farmID) * g_currentMission.economyManager:getPricePerLiter(g_fillTypeManager:getFillTypeIndexByName("milk")), farmID, MoneyType.SOLD_MILK, true);
+	self:canMilkSale(farmID, true);
 end;
 
 
 function AutomaticMilkSale.hasAnimal(husbandry)
-	return #husbandry.modulesByName.animals.animals > 0;
+	return #husbandry:getModuleByName("animals").animals > 0;
 end;
 
 
-function AutomaticMilkSale:canMilkSale(reset)
+function AutomaticMilkSale:canMilkSale(farmID, reset)
 	for _, husbandry in pairs(g_currentMission.husbandries) do
-		if husbandry.modulesByName.animals.animalType:lower() == "cow" then
-			if husbandry.modulesByName.animals.owner.ownerFarmId == g_currentMission.player.farmId then
+		if husbandry:getModuleByName("animals").animalType:lower() == "cow" then
+			if husbandry:getOwnerFarmId() == farmID then
 				if self.hasAnimal(husbandry) then
 					if reset then
-						husbandry.modulesByName.milk.fillLevels[16] = 0;
+						husbandry:getModuleByName("milk"):setFillLevel(g_fillTypeManager:getFillTypeIndexByName("milk"), 0);
 					end;
-					return husbandry.modulesByName.milk.fillLevels[16];
+					local fillLevel = husbandry:getModuleByName("milk"):getFillLevel(g_fillTypeManager:getFillTypeIndexByName("milk"));
+					self:logInfo('husbandry:getModuleByName("milk").getFillLevel(16) = %i', fillLevel);
+					return fillLevel;
 				end;
 			end;
 		end;
@@ -61,12 +74,15 @@ end;
 
 
 function AutomaticMilkSale:dayChanged()
-	if self.debug then
-		print(("MilkDebug = {\n \t milkLevel = %0.2f L \n \t priceScale = %0.2f per Liter \n \t price = %0.2f Euro/L \n };"):format(self:canMilkSale(),EconomyManager:getPricePerLiter(16),self:canMilkSale()*EconomyManager:getPricePerLiter(16)));
+	for farmID in pairs(g_farmManager.farms) do
+		self:logInfo("MilkDebug[%i] = {\n \t milkLevel = %0.2f L \n \t priceScale = %0.2f per Liter \n \t price = %0.2f Euro/L \n };", 
+					farmID, self:canMilkSale(farmID), g_currentMission.economyManager:getPricePerLiter(g_fillTypeManager:getFillTypeIndexByName("milk")), 
+					self:canMilkSale(farmID) * g_currentMission.economyManager:getPricePerLiter(g_fillTypeManager:getFillTypeIndexByName("milk")));
+		
+		if self:canMilkSale(farmID) > 0 then
+			self:sellMilk(farmID);
+		end;
 	end;
-	if self:canMilkSale() > 0 then
-		self:sellMilk();
-	end
 end;
 
 function AutomaticMilkSale:consoleComandMilkSaleDebug()
