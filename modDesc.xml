@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="47">
-
-	<author>nilBrain</author>
+<modDesc descVersion="67">
+	<author>Vertex Dezign</author>
+	<contributors>Icon: SirJoki80 Script: nilBrain</contributors>
     <version>1.0.0.0</version>
-    
 	<title>
         <en>Automatic MilkSale</en>
         <de>Automatischer Milchverkauf</de>
     </title>
-    
 	<description>
         <en>
-			<![CDATA[This mod automatically sells the Milk from the Husbandrys at 0 o'clock.]]>
+			<![CDATA[This mod automatically sells the Milk from the Husbandrys at 6 o'clock.
+The final selling price per liter is calculated from the base price, the difficulty and a seasonal price fluctuation.
+]]>
 		</en>
 		<de>
-			<![CDATA[Dieser Mod verkauft automatisch die Milch von den Ställen um 0Uhr.]]>
+			<![CDATA[Dieser Mod verkauft automatisch die Milch von den Ställen um 6 Uhr.
+Der finale Verkaufspreis pro Liter errechnet sich aus dem Basispreis, dem Schwierigkeitsgrad sowie einer saisonalen Preisschwankung.
+]]>
 		</de>
     </description>
-    
 	<iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true"/>
-	
 	<extraSourceFiles>	
-		<sourceFile filename="AutomaticMilkSale.lua" /> 
+		<sourceFile filename="automaticMilkSale.lua" /> 
 	</extraSourceFiles>
 </modDesc>
