@@ -22,6 +22,6 @@ Der finale Verkaufspreis pro Liter errechnet sich aus dem Basispreis, dem Schwie
 	<iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true"/>
 	<extraSourceFiles>	
-		<sourceFile filename="automaticMilkSale.lua" /> 
+		<sourceFile filename="AutomaticMilkSale.lua" /> 
 	</extraSourceFiles>
 </modDesc>
